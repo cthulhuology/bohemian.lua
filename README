@@ -1,0 +1,118 @@
+Bohemian.lua - Just A Casual Casual Easy Thing
+==============================================
+
+© 2013 David J Goehrig <dave@dloh.org>
+All Rights Reserved
+
+
+What is Bohemian.lua
+--------------------
+
+Bohemian.lua is a minimalistic programming model for Lua that uses functions as if they were objects
+with dynamic dispatch.  For example, the _ is a function which constructs a new function object 
+which acts as the environment. By chaining function calls, we can write complete programs which
+operate within the lexically scoped context of this environment:
+
+	_ = require('bohemian')._
+	_()
+		("has","message","hello ")
+		("does","greet", function(self,Who) print(self("message") .. Who) end)
+		("greet", "world!")
+
+Since functions in Lua are first class, we can extend the capabilities of this context and any
+nested sub contexts in a similar manner:
+
+	o = _()
+	("has","Bob",_()
+		("has", "greeting", "Hi ")
+		("has", "friend", _()
+			("has","name","Mary"))
+			("does", "greet", function(self,Who)
+				print("Hola " .. Who .. "!")
+				return self
+			end)
+		("does", "greet", function(self,Who)
+			print(self("greeting") .. Who .. "!")
+			return self
+		end))
+
+	o("Bob")
+		("greet", o("Bob")("friend")("name"))
+		("friend")("greet","Bob")
+
+We don't just have to compose objects inline either, but can use references to nest relationships
+as well:
+
+	-- we can use this as a prototype
+	Person = function() 
+		return _()
+			("has", "wallet", 10)	-- dollars in wallet
+			("does", "dollars", function(self)
+				print(self("name") .. " has $" .. self("wallet") .. ".")
+				return self
+			end)
+			("does", "take", function(self,dollars)
+				self("has", "wallet", self("wallet") + dollars)
+				return self
+			end)
+			("does", "give", function(self,person,dollars)
+				if dollars < self("wallet") and dollars > 0 then
+					self("has","wallet", self("wallet") - dollars)
+					person("take",dollars)
+				else
+					print(self("name") .. " doesn't have $" .. dollars)
+				end
+				return self
+			end)
+	end
+
+	Bob = Person()("has","name","Bob")
+	Alice = Person()("has","name","Alice")
+
+	-- Bob gives Alice 4
+	Bob("give",Alice, 4)
+	Bob("dollars")
+	Alice("dollars")
+
+	-- Bob can't give Alice 10 as he only has 6 left
+	Bob("give",Alice, 10)
+
+	-- Alice gives Bob 10 back
+	Alice("give",Bob, 10)
+	Bob("dollars")
+	Alice("dollars")
+
+	
+Why?!? Dear God! Why?!?
+-----------------------
+
+Because I can?  Really, when you get right down to it, all languages with first class functions and
+closures are the same.  When you strip away all the funny syntax and wars over silly things, you can
+derive a fairly nice prototypal language made entirely of closures and dynamic dispatch via function
+calls.  The crazy thing is this is just straight Lua!
+
+I've also implemented the same basic scheme in Javascript, and aside for the function definitions, 
+the two languages become almost indistinguishable.  With a little clever parsing, it is also possible
+to remove even those differences.  In the end, it's just a casual easy Lispy thing.
+
+
+License
+-------
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ following conditions are met:
+ 
+ Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+ the following disclaimer in the documentation andor other materials provided with the distribution.
+ 
+ Neither the name of the project nor the names of its contributors may be used to endorse or promote products derived
+ from this software without specific prior written permission. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+

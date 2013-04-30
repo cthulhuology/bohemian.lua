@@ -1,3 +1,10 @@
+-- unknown.lua
+--
+-- © 2013 David J. Goehrig <dave@dloh.org>
+-- All Rights Reserved
+--
+--	An example of handling unkown messages
+--
 
 _ = require('bohemian')._
 

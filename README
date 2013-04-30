@@ -9,7 +9,8 @@ What is Bohemian.lua
 --------------------
 
 Bohemian.lua is a minimalistic programming model for Lua that uses functions as if they were objects
-with dynamic dispatch.  For example, the _ is a function which constructs a new function object 
+with dynamic dispatch with does not understand, single generation dynamic multiple inheritance, and
+behaviorlist tendencies.  For example, the _ is a function which constructs a new function object 
 which acts as the environment. By chaining function calls, we can write complete programs which
 operate within the lexically scoped context of this environment:
 
@@ -82,7 +83,78 @@ as well:
 	Bob("dollars")
 	Alice("dollars")
 
-	
+Bohemian also support single generation multiple parent dynamic inheritance.  What this means is 
+that each object can inherit properties of zero or more parent objects.  The parents are strictly 
+ordered and resolve in the order they are invoked such as:
+
+	Homer = _()
+		("has","age",33)
+		("has","first name","Homer")
+		("has","last name", "Simpson")
+		("does","name", function(self)
+			return self("first name") .. " " .. self("last name")
+		end)
+		("has","address","742 Evergreen Tr.")
+		("has","occupation","Nuclear Technician")
+		("does","eat", function(self,food)
+			if food == "donuts" or food == "beer" then
+				print("mmmmh " .. food)
+			else
+				print("meh!")
+			end
+		end)
+
+	-- Bart inherits name, address, and "last name" from Homer
+	Bart = _(Homer)
+		("has","first name","Bart")
+		("has","age",9)
+		("has","occupation","student")
+		("does","eat",function(self,food)
+			if food == "my shorts" then
+				print("eat " .. food)
+			else
+				print("meh!")
+			end
+		end)
+
+	-- Lisa inherits occupation from Bart, and name, address, and "last name" from Homer
+	Lisa = _(Bart,Homer)	
+		("has","first name","Lisa")
+		("has","age",7)
+		("does","eat",function(self,food)
+			print("I don't eat anything that casts a shadow")
+		end)
+
+This allows you to not repeat yourself if you don't have to repeat yourself, but you can still
+still repeat yourself if you want to repeat yourself.  It also allows you to construct inheritance
+schemes that would be impossible in other languages.  For example, since we have only single 
+generation inheritance we can have B inherit from A, C inherit from B, and A inherit from C,
+but not A inherit from B!
+
+	-- create a base object A
+	A = _()("does","say", function() print("hello") end)
+
+	-- create an object B that derives from A
+	B = _(A)("does","yell", function() print("HELLO") end)
+
+	-- create an object C that derives from B
+	C = _(B)("does","spell", function() print("h.e.l.l.o.") end)
+
+	-- make A derive from C! (this is a ring inheritence A -> B -> C -> A)
+	A("is",C)
+
+This example has each A, B, and C capable of responding to only two of the messages "say","yell", 
+and "spell".  A & C can "spell", A & B can "say", and B & C can "yell".  We could use the multiple
+parent thing to create another object D that can do all three:
+
+	D = _(A,B,C)
+
+But this poor bastard now has 3 explicit parents from whom he inherits his capabilities.  In this
+fashion, we can emulate multiple generations of inheritence by begatting from the beginning.  Since
+the order is explicit, we can be certain of the order of traversal. 
+
+
+
 Why?!? Dear God! Why?!?
 -----------------------
 

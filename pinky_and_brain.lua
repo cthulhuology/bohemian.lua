@@ -1,5 +1,3 @@
-#!/usr/bin/env lua
---
 -- pinky_and_the_brain.lua
 --
 -- © 2013 David J Goehrig <dave@dloh.org>

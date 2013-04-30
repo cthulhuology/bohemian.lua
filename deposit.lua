@@ -1,5 +1,11 @@
-_ = require('bohemian')._
+-- deposit.lua
+--
+-- © 2013 David J Goehrig <dave@dloh.org>
+-- All Rights Reserved
+--
+--	An example application with behavioralism
 
+_ = require('bohemian')._
 
 -- we can use this as a prototype
 Person = function() 

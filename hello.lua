@@ -1,5 +1,3 @@
-#!/usr/bin/env lua
---
 -- hello.lua
 --
 -- © 2013 David J Goehrig <dave@dloh.org>

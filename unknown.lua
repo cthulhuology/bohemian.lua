@@ -7,8 +7,8 @@ print("Oracle predicting the future")
 Oracle("predict","future")
 
 print("Oracle unknown handle overriding")
-Oracle("does","unknown", function(self,method,args)
-	print(self("name") .. " doesn't know how to " .. method .. "(" .. unpack(args) .. ")")
+Oracle("does","*", function(self,method,args)
+	print(self("name") .. " says to " .. method .. " the " .. unpack(args) .. " is hard")
 end)
 Oracle("predict","future")
 
@@ -19,7 +19,7 @@ Oracle("does","predict", function(self,time)
 	elseif time == "past" then
 		print("the past is easy to predict")
 	elseif time == "present" then
-		print("You wish")
+		print("the present is happening right now!")
 	else
 		print("I could never predict that!")
 	end

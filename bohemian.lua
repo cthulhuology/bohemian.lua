@@ -23,7 +23,7 @@ _ = function(...)
 				return v("lookup",method)(self,unpack(arg))
 			end
 		end
-		return state["unknown"](self,method,arg)
+		return state["*"](self,method,arg)
 	end
 	state.does = function(self,method,fun)
 		state[method] = fun
@@ -41,7 +41,7 @@ _ = function(...)
 	state.lookup = function(self,method)
 		return state[method]
 	end
-	state.unknown = function(self,method,args)
+	state["*"] = function(self,method,args)
 		print(self, " doesn't ",method, "with", args)
 		return self	
 	end

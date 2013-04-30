@@ -1,6 +1,11 @@
+-- bob.lua
+--
+-- © 2013 David J Goehrig <dave@dloh.org>
+-- All Rights Reserved
+--
+--	Examples of object composition
 
-_ = require('bohemian')._
-o = _()
+_ = require('bohemian')._ o = _()
 ("has","Bob",_()
 	("has", "greeting", "Hi ")
 	("has", "friend", _()

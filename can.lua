@@ -1,9 +1,24 @@
+-- can.lua
+--
+-- © 2013 David J Goehrig <dave@dloh.org>
+-- All Rights Reserved
+--
+--	An example in single level cyclic inheritence
 
 _ = require('bohemian')._
 
+
+-- create a base object A
 A = _()("does","say", function() print("hello") end)
+
+-- create an object B that derives from A
 B = _(A)("does","yell", function() print("HELLO") end)
+
+-- create an object C that derives from B
 C = _(B)("does","spell", function() print("h.e.l.l.o.") end)
+
+-- make A derive from C! (this is a ring inheritence A -> B -> C -> A)
+A("is",C)
 
 print("Can A say?", A("can","say") )
 A("say")

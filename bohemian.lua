@@ -57,5 +57,9 @@ _ = function(...)
 		print(self, " doesn't ",method, "with", args)
 		return self	
 	end
+	state.is = function(self,parent)
+		table.insert(parents,1,parent)	-- prepend parent to list
+		return self
+	end
 	return self
 end

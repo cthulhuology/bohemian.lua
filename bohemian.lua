@@ -19,7 +19,7 @@ _ = function(...)
 		if type(state[method]) == "function" then
 			return state[method](self,unpack(arg)) 
 		end 
-		for k,v in pairs(parents) do if v("can",method) then
+		for k,v in pairs(parents) do if v("may",method) then
 				return v("lookup",method)(self,unpack(arg))
 			end
 		end
@@ -36,6 +36,18 @@ _ = function(...)
 		return self
 	end
 	state.can = function(self,method)
+		if type(state[method]) == "function" then
+			return true
+		else
+			for k,v in pairs(parents) do 
+				if v("may",method) then
+					return true
+				end 
+			end
+		end
+		return false
+	end
+	state.may = function(self,method)
 		return type(state[method]) == "function"
 	end
 	state.lookup = function(self,method)
